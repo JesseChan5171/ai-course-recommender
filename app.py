@@ -68,6 +68,63 @@ st.set_page_config(
     }
 )
 
+# Utility functions
+def validate_user_input(query: str) -> bool:
+    """
+    Validate user input for search queries.
+    
+    Args:
+        query: User search query
+        
+    Returns:
+        bool: True if input is valid, False otherwise
+    """
+    if not query or not query.strip():
+        return False
+    
+    # Check minimum length
+    if len(query.strip()) < 2:
+        return False
+    
+    # Check for potentially harmful content (basic security)
+    harmful_patterns = ['<script', 'javascript:', 'data:', 'vbscript:', 'onload=', 'onerror=']
+    query_lower = query.lower()
+    if any(pattern in query_lower for pattern in harmful_patterns):
+        return False
+    
+    # Check maximum length (prevent very long queries)
+    if len(query) > 500:
+        return False
+    
+    return True
+
+
+def sanitize_query(query: str) -> str:
+    """
+    Sanitize and clean user query.
+    
+    Args:
+        query: Raw user query
+        
+    Returns:
+        str: Sanitized query
+    """
+    if not query:
+        return ""
+    
+    # Strip whitespace and normalize
+    clean_query = query.strip()
+    
+    # Remove multiple spaces
+    import re
+    clean_query = re.sub(r'\s+', ' ', clean_query)
+    
+    # Remove potentially harmful characters but keep basic punctuation
+    clean_query = re.sub(r'[<>"\']', '', clean_query)
+    
+    return clean_query
+
+
 # Custom CSS styling
 def load_custom_css():
     """Load custom CSS for enhanced UI styling."""

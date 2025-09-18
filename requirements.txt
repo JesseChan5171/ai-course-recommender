@@ -19,3 +19,4 @@ pydantic>=2.0.0
 
 # Additional Utilities
 typing-extensions>=4.7.0
+plotly>=5.0.0

@@ -192,7 +192,17 @@ def search_courses_by_vector(
         conn.close()
                     
     except Exception as e:
-        # If database connection fails, return sample data for development
+        # Check if this is an authentication error - if so, don't fall back to sample data
+        error_str = str(e).lower()
+        error_type = type(e).__name__.lower()
+        
+        # Check for authentication-related errors
+        auth_keywords = ['api key', 'authentication', 'credentials', 'unauthorized', 'bxnim0415e', 'invalidcredentials']
+        if (any(auth_keyword in error_str for auth_keyword in auth_keywords) or 
+            'credential' in error_type or 'auth' in error_type):
+            raise e  # Re-raise the original authentication error
+        
+        # Only use sample data for non-authentication errors (like database issues)
         results = [
             CourseSearchResult(
                 course_id="sample_001",
