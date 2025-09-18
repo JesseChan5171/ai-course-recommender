@@ -40,7 +40,12 @@ cp .env.example .env
 # Edit .env with your credentials
 ```
 
-4. **Run the application**
+4. **Database Setup** (Required before running app)
+```bash
+python scripts/setup_db.py
+```
+
+5. **Run the application**
 ```bash
 streamlit run app.py
 ```
@@ -135,10 +140,16 @@ course-recommender/
 
 ### Database Setup
 
-Initialize the database with sample data:
+The database setup is required during initial installation (step 4 above). This command:
+- Creates the SQLite database structure
+- Loads sample course data for testing
+- Generates embeddings (requires valid API credentials)
+
 ```bash
 python scripts/setup_db.py
 ```
+
+**Note**: This step is required before running the application for the first time.
 
 ## 🔒 Security
 
