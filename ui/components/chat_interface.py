@@ -165,15 +165,15 @@ def render_chat_input() -> None:
             st.markdown("<br>", unsafe_allow_html=True)  # Spacing
             send_button = st.form_submit_button("Send 📤", use_container_width=True, type="primary")
             
-            # Advanced options
-            with st.expander("⚙️ Options"):
-                include_context = st.checkbox("Include search context", value=True)
-                response_style = st.selectbox(
-                    "Response style",
-                    ["Detailed", "Concise", "Step-by-step", "Conversational"],
-                    index=0
-                )
-                max_courses = st.slider("Max courses to suggest", 1, 10, 5)
+            # Advanced options (inline to avoid nested expanders)
+            st.markdown("**⚙️ Options**")
+            include_context = st.checkbox("Include search context", value=True)
+            response_style = st.selectbox(
+                "Response style",
+                ["Detailed", "Concise", "Step-by-step", "Conversational"],
+                index=0
+            )
+            max_courses = st.slider("Max courses to suggest", 1, 10, 5)
         
         # Process message when sent
         if send_button and user_input.strip():
@@ -450,27 +450,27 @@ def show_chat_statistics() -> None:
         st.info("No chat data available for statistics.")
         return
     
-    with st.expander("📊 Chat Statistics", expanded=True):
-        messages = st.session_state.chat_messages
-        
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            total_messages = len(messages)
-            user_messages = len([m for m in messages if m["role"] == "user"])
-            st.metric("Total Messages", total_messages)
-            st.metric("Your Messages", user_messages)
-        
-        with col2:
-            ai_messages = len([m for m in messages if m["role"] == "assistant"])
-            avg_length = sum(len(m["content"]) for m in messages) / len(messages)
-            st.metric("AI Responses", ai_messages)
-            st.metric("Avg Message Length", f"{avg_length:.0f} chars")
-        
-        with col3:
-            if messages:
-                session_duration = messages[-1]["timestamp"] - messages[0]["timestamp"]
-                st.metric("Session Duration", f"{session_duration.seconds // 60} min")
+    st.markdown("### 📊 Chat Statistics")
+    messages = st.session_state.chat_messages
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        total_messages = len(messages)
+        user_messages = len([m for m in messages if m["role"] == "user"])
+        st.metric("Total Messages", total_messages)
+        st.metric("Your Messages", user_messages)
+    
+    with col2:
+        ai_messages = len([m for m in messages if m["role"] == "assistant"])
+        avg_length = sum(len(m["content"]) for m in messages) / len(messages)
+        st.metric("AI Responses", ai_messages)
+        st.metric("Avg Message Length", f"{avg_length:.0f} chars")
+    
+    with col3:
+        if messages:
+            session_duration = messages[-1]["timestamp"] - messages[0]["timestamp"]
+            st.metric("Session Duration", f"{session_duration.seconds // 60} min")
             
             ratings = st.session_state.get('message_ratings', {})
             positive_ratings = len([r for r in ratings.values() if r == "positive"])

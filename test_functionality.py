@@ -32,7 +32,7 @@ def test_database_initialization():
         print(f"   - Total courses: {stats['total_courses']}")
         print(f"   - Courses with embeddings: {stats['courses_with_embeddings']}")
         print(f"   - Skill level distribution: {stats['level_distribution']}")
-        print(f"   - Provider distribution: {stats['provider_distribution']}")
+        print(f"   - Provider distribution: {stats.get('provider_distribution', 'N/A')}")
         
         assert stats['total_courses'] > 0, "No courses in database"
         assert stats['courses_with_embeddings'] > 0, "No embeddings generated"
@@ -64,7 +64,11 @@ def test_vector_search():
             
             # Display results
             for i, course in enumerate(results[:2], 1):
-                print(f"   {i}. {course.get('title', 'N/A')} (Score: {course.get('similarity_score', 0):.3f})")
+                # Handle CourseSearchResult object
+                if hasattr(course, 'title'):
+                    print(f"   {i}. {course.title} (Score: {course.similarity_score:.3f})")
+                else:
+                    print(f"   {i}. {course.get('title', 'N/A')} (Score: {course.get('similarity_score', 0):.3f})")
         
         print("✅ Vector search tests passed!")
         return True
